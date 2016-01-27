@@ -15,7 +15,7 @@ public class Controller {
         int numberOfCrawlers = 7;
 
         CrawlConfig config = new CrawlConfig();
-        config.setUserAgentString('UCI Inf141-CS121 crawler 76513468 10616769 20426226 64137163');
+        config.setUserAgentString("UCI Inf141-CS121 crawler 76513468 10616769 20426226 64137163");
         config.setCrawlStorageFolder(crawlStorageFolder);
         
         // Add a politeness delay of 600 ms 
