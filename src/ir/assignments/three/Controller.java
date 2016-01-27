@@ -15,8 +15,18 @@ public class Controller {
         int numberOfCrawlers = 7;
 
         CrawlConfig config = new CrawlConfig();
+        config.setUserAgentString('UCI Inf141-CS121 crawler 76513468 10616769 20426226 64137163');
         config.setCrawlStorageFolder(crawlStorageFolder);
+        
+        // Add a politeness delay of 600 ms 
+        config.setPolitenessDelay(600);
 
+        // Set maximum crawl depth
+        config.setMaxDepthofCrawling(1);
+        
+        // Set the maximum number of pages to crawl
+        config.setMaxPagesToFetch(1000);
+        
         /*
          * Instantiate the controller for this crawl.
          */
