@@ -13,7 +13,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 import java.util.regex.Pattern;
 
 public class Crawler extends WebCrawler {
-	
+	 private static int sum =0;
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp3|zip|gz))$");
     
@@ -62,10 +62,15 @@ public class Crawler extends WebCrawler {
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			Set<WebURL> links = htmlParseData.getOutgoingUrls();
-	
+	      sum+=1;
 			System.out.println("Text length: " + text.length());
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + links.size());
+         System.out.println(sum);
+         File file = new File("url.txt");
+         if(!file.exists()){
+            file.createNewFile();
+         }
 		}
 	}
 
