@@ -67,10 +67,10 @@ public class Crawler extends WebCrawler {
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + links.size());
          System.out.println(sum);
-         File file = new File("url.txt");
-         if(!file.exists()){
-            file.createNewFile();
-         }
+         //File file = new File("url.txt");
+         //if(!file.exists()){
+           // file.createNewFile();
+         //}
 		}
 	}
 
