@@ -22,7 +22,11 @@ public class Controller {
         config.setPolitenessDelay(600);
 
         // Set maximum crawl depth
+<<<<<<< HEAD
         config.setMaxDepthOfCrawling(-1);
+=======
+        config.setMaxDepthOfCrawling(1);
+>>>>>>> origin/master
         
         // Set the maximum number of pages to crawl
         config.setMaxPagesToFetch(8000);
@@ -50,6 +54,18 @@ public class Controller {
          */
         controller.start(Crawler.class, numberOfCrawlers);
     }
+	
+	// Method to find out how much time it took to crawl the entire domain	
+	
+	// Method to determine how many unique pages found in the entire domain
+	
+	// Method to find how many unique pages found in the entire domain
+	
+	// Method to find the longest page in terms of number of words
+	
+	// Method to find the 500 most common words in this domain
+	
+	
 
 }
 
