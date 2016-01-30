@@ -53,6 +53,9 @@ public class Controller {
         
         // Find out how much time it took to crawl the entire domain
         crawlTime(start);
+        
+        // Find out how many unique pages were found
+        Crawler.findUnique();
     }
 	
 	// Method to find out how much time it took to crawl the entire domain and print it
