@@ -43,8 +43,10 @@ public class Crawler extends WebCrawler {
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
 		String href = url.getURL().toLowerCase();
+
+		// Check if URL is a sub-domain of ics.uci.edu
 		return !FILTERS.matcher(href).matches()
-		&& href.startsWith("http://www.ics.uci.edu/");
+		&& href.contains(".ics.uci.edu");
 	}
 	
 	/**
