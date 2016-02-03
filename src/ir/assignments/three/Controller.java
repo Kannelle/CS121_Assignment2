@@ -26,7 +26,7 @@ public class Controller {
 
         
         // Set the maximum number of pages to crawl, -1 means unlimited
-        config.setMaxPagesToFetch(-1);
+        config.setMaxPagesToFetch(10);
         
         /*
          * Instantiate the controller for this crawl.
@@ -50,6 +50,10 @@ public class Controller {
          * will reach the line after this only when crawling is finished.
          */
         controller.start(Crawler.class, numberOfCrawlers);
+        
+        // to test crawl in Crawler class
+        System.out.println("The result collection of URLs:");
+        System.out.println(Crawler.crawl("http://www.ics.uci.edu/"));
         
         // Find out how much time it took to crawl the entire domain
         crawlTime(start);
