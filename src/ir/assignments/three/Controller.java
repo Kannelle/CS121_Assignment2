@@ -21,12 +21,12 @@ public class Controller {
         // Add a politeness delay of 600 ms 
         config.setPolitenessDelay(600);
 
-        // Set maximum crawl depth
-        config.setMaxDepthOfCrawling(1);
+        // Set maximum crawl depth, -1 means deepest
+        config.setMaxDepthOfCrawling(-1);
 
         
-        // Set the maximum number of pages to crawl
-        config.setMaxPagesToFetch(8000);
+        // Set the maximum number of pages to crawl, -1 means unlimited
+        config.setMaxPagesToFetch(-1);
         
         /*
          * Instantiate the controller for this crawl.
