@@ -46,9 +46,10 @@ public class Crawler extends WebCrawler {
 	public boolean shouldVisit(Page referringPage, WebURL url) {
 		String href = url.getURL().toLowerCase();
 
-		// Check if URL is a sub-domain of ics.uci.edu
+		// Check if URL is a sub-domain of ics.uci.edu and if it is a trap
 		return !FILTERS.matcher(href).matches()
-		&& href.contains(".ics.uci.edu");
+		&& href.contains(".ics.uci.edu")
+		&& !findTrap(href);
 	}
 	
 	/**
@@ -82,6 +83,11 @@ public class Crawler extends WebCrawler {
 	// Print the count of the unique pages
 	public static void findUnique() {
 		System.out.println("Number of unique pages: "+sum);
+	}
+	
+	// Return true if a URL is a crawler trap 
+	public static boolean findTrap(String url){
+		return url.startsWith("http://calendar.ics.uci.edu"); 
 	}
 
 }
