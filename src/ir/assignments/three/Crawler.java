@@ -4,15 +4,18 @@ package ir.assignments.three;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.*;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 import java.util.regex.Pattern;
+import java.io.*;
 
 public class Crawler extends WebCrawler {
-	 private static int sum =0;
+	 private static int totalURLs = 0; //total amount of URLs we found
+    private static List<String> diffSubdomains = new ArrayList<String>(); //list of different subdomains we found
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp3|zip|gz))$");
     
@@ -30,6 +33,9 @@ public class Crawler extends WebCrawler {
 		return null;
 	}
 
+   private void initialFileWriter(){
+      
+   }
 	/**
 	* This method receives two parameters. The first parameter is the page
 	* in which we have discovered this new url and the second parameter is
@@ -54,22 +60,38 @@ public class Crawler extends WebCrawler {
 	@Override
 	public void visit(Page page) {
 		String url = page.getWebURL().getURL();
+      String subDomain = page.getWebURL().getSubDomain();
 		System.out.println("URL: " + url);
+      
+      System.out.println("Subdomain: " + subDomain);
+     
+      //count different subdomains
+      if(!diffSubdomains.contains(subDomain)){
+         diffSubdomains.add(subDomain);
+      }
+      System.out.println("Different subdomain counting : " + diffSubdomains.size());
 	
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			Set<WebURL> links = htmlParseData.getOutgoingUrls();
-	      sum+=1;
+	      totalURLs += 1;
 			System.out.println("Text length: " + text.length());
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + links.size());
-         System.out.println(sum);
-         //File file = new File("url.txt");
-         //if(!file.exists()){
-           // file.createNewFile();
-         //}
+         System.out.println("URL counting: " + totalURLs);
+         
+         //store all URLs we found into a text called URLs
+         try{
+            FileWriter fileOfURLs = new FileWriter("URLs.txt");//,true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileOfURLs);
+            bufferedWriter.write(url);
+            bufferedWriter.newLine();
+            bufferedWriter.close();
+         }catch(IOException e){
+            e.printStackTrace();
+         }
 		}
 	}
 

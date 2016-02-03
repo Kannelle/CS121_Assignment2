@@ -22,11 +22,8 @@ public class Controller {
         config.setPolitenessDelay(600);
 
         // Set maximum crawl depth
-<<<<<<< HEAD
         config.setMaxDepthOfCrawling(-1);
-=======
-        config.setMaxDepthOfCrawling(1);
->>>>>>> origin/master
+
         
         // Set the maximum number of pages to crawl
         config.setMaxPagesToFetch(8000);
