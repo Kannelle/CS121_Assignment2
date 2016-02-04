@@ -55,6 +55,7 @@ public class Crawler extends WebCrawler {
 		String href = url.getURL().toLowerCase();
 
 		// Check if URL is a sub-domain of ics.uci.edu and if it is a trap
+		// If it is, do not visit the page
 		return !FILTERS.matcher(href).matches()
 		&& href.contains(".ics.uci.edu")
 		&& !findTrap(href);
