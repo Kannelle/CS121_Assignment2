@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import java.io.*;
 
 public class Crawler extends WebCrawler {
-	 private static int totalURLs = 0; //total amount of URLs we found
+	private static int totalURLs = 0; //total amount of URLs we found
     private static List<String> diffSubdomains = new ArrayList<String>(); //list of different subdomains we found
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp3|zip|gz))$");
@@ -106,5 +106,18 @@ public class Crawler extends WebCrawler {
          }
 		}
 	}
+	
+	// Print the count of the unique pages 
+	public static void findUnique() { 
+ 		System.out.println("Number of unique pages: "+totalURLs); 
+ 	} 
+
+	
+	// Return true if a URL is a crawler trap  
+	public static boolean findTrap(String url){ 
+	 		return url.contains("calendar.ics.uci.edu")
+	 				|| url.contains("duttgroup.ics.uci.edu");  
+ 	} 
+
 
 }

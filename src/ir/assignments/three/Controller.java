@@ -18,8 +18,8 @@ public class Controller {
         config.setUserAgentString("UCI Inf141-CS121 crawler 76513468 10616769 20426226 64137163");
         config.setCrawlStorageFolder(crawlStorageFolder);
         
-        // Add a politeness delay of 600 ms 
-        config.setPolitenessDelay(600);
+        // Add a politeness delay of 1200 ms 
+        config.setPolitenessDelay(1200);
 
         config.setMaxDepthOfCrawling(-1);
 
@@ -68,8 +68,7 @@ public class Controller {
 		System.out.println("Time elapsed: "+elapsedTime+" ms");
 	}
 	
-	// Method to determine how many unique pages found in the entire domain
-	// (Uniqueness is established by the URL, not the page's content.)
+
 	
 	// Method to find the number of subdomains found.
 	// Submit the list of subdomains ordered alphabetically and the number 
