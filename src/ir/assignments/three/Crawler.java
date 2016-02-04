@@ -2,7 +2,9 @@
 
 package ir.assignments.three;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.*;
 
@@ -19,6 +21,9 @@ public class Crawler extends WebCrawler {
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp3|zip|gz))$");
     
+    
+    // Create a collection of all URLs
+    private static Collection<String> allURLs = new LinkedHashSet<String>();
 	/**
 	 * This method is for testing purposes only. It does not need to be used
 	 * to answer any of the questions in the assignment. However, it must
@@ -29,8 +34,7 @@ public class Crawler extends WebCrawler {
 	 */
 	
 	public static Collection<String> crawl(String seedURL) {
-		// TODO implement me
-		return null;
+		return allURLs;
 	}
 
    private void initialFileWriter(){
@@ -64,6 +68,10 @@ public class Crawler extends WebCrawler {
 	public void visit(Page page) {
 		String url = page.getWebURL().getURL();
       String subDomain = page.getWebURL().getSubDomain();
+		
+		// append URL to the URL collection
+		//allURLs.add(url);
+		
 		System.out.println("URL: " + url);
       
       System.out.println("Subdomain: " + subDomain);
