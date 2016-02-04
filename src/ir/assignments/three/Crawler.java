@@ -49,8 +49,11 @@ public class Crawler extends WebCrawler {
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
 		String href = url.getURL().toLowerCase();
+
+		// Check if URL is a sub-domain of ics.uci.edu and if it is a trap
 		return !FILTERS.matcher(href).matches()
-		&& href.startsWith("http://www.ics.uci.edu/");
+		&& href.contains(".ics.uci.edu")
+		&& !findTrap(href);
 	}
 	
 	/**
@@ -76,6 +79,7 @@ public class Crawler extends WebCrawler {
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			Set<WebURL> links = htmlParseData.getOutgoingUrls();
+
 	      totalURLs += 1;
 			System.out.println("Text length: " + text.length());
 			System.out.println("Html length: " + html.length());
