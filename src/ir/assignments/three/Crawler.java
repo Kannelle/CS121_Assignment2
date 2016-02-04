@@ -2,11 +2,12 @@
 
 package ir.assignments.three;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.*;
+import ir.assignments.three.Frequency;
+import ir.assignments.three.Modified_Utilities;
+import ir.assignments.three.Modified_WordFrequencyCounter;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -26,18 +27,31 @@ public class Crawler extends WebCrawler {
             this.pages = pages;
         }
     }
-    
+
+    /** contains urls and number of words in that page*/
+    class urlWordsCounters
+    {
+        public String url;
+        public int count;
+        public urlWordsCounters(String url,int count){
+            this.url = url;
+            this.count = count;
+        }    
+    }
+   
 	 private static int totalURLs = 0;
     private static List<subDom> diffSubdomains = new ArrayList<subDom>();//list of different subdomains and pages we found
     private static List<String> subStr = new ArrayList<String>();//list of different subdomains we found
-    
+    private static List<Frequency> lst = new ArrayList<Frequency>();//list of word frequencies
+    private static Modified_WordFrequencyCounter wfc = new Modified_WordFrequencyCounter(); //use for counting frequency
+    private static List<urlWordsCounters> urlwords = new ArrayList<urlWordsCounters>(); //list of pages and number of words in them
+        
     // Time when the timeCalculator was last called
     public static long timeOfLastUpdate = 0;
     
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp3|zip|gz))$");
-    
-    
+
     // Create a collection of all URLs
     private static Collection<String> allURLs = new LinkedHashSet<String>();
 	/**
@@ -60,6 +74,16 @@ public class Crawler extends WebCrawler {
          return a.subd.compareTo(b.subd);
       }
    }
+
+   //Implement a custom Comparator to sort the list of urlWordsCounters according to
+   //the number of words in that page, then the url
+   public static class urlWordsCountersComparator implements Comparator<urlWordsCounters> {
+      public int compare(urlWordsCounters a, urlWordsCounters b){
+        int freComparison = b.count - a.count;
+        return freComparison == 0 ? a.url.compareTo(b.url) : freComparison;      
+      }
+   }   
+
 	/**
 	* This method receives two parameters. The first parameter is the page
 	* in which we have discovered this new url and the second parameter is
@@ -94,11 +118,10 @@ public class Crawler extends WebCrawler {
 		//allURLs.add(url);
 		
 		System.out.println("URL: " + url);
-      
       System.out.println("Subdomain: " + subDomain);
      
       //subdomains
-      if(!subStr.contains(subDomain)){
+      if(!subStr.contains(subDomain)){//check if the subdomain has appeared once, if not, append it to the subdomain list
          subStr.add(subDomain);
          subDom sub = new subDom(subDomain,1);
          diffSubdomains.add(sub);
@@ -106,7 +129,7 @@ public class Crawler extends WebCrawler {
          Collections.sort(subStr);
          Collections.sort(diffSubdomains, new subDomComparator());
       }
-      else{
+      else{// if the subdomain has appeared once, increment the page count for that subdomain
          int index = subStr.indexOf(subDomain);
          subDom sub1 = diffSubdomains.get(index);
          sub1.pages += 1;
@@ -117,8 +140,8 @@ public class Crawler extends WebCrawler {
       try{
          FileWriter fileOfURLs = new FileWriter("Subdomains.txt");
          BufferedWriter bufferedWriter = new BufferedWriter(fileOfURLs);
-         
-         for(int i=0;i<diffSubdomains.size();i++) //write subdomains' URLs and pages into those subdomains to text file
+         //write subdomains' URLs and pages into those subdomains to text file
+         for(int i=0;i<diffSubdomains.size();i++) 
          {
             String str = diffSubdomains.get(i).subd + ", " + diffSubdomains.get(i).pages;
             bufferedWriter.write(str);
@@ -129,7 +152,9 @@ public class Crawler extends WebCrawler {
       }catch(IOException e){
          e.printStackTrace();      
 	   }
-	
+      
+      
+      
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String text = htmlParseData.getText(); 
@@ -141,30 +166,48 @@ public class Crawler extends WebCrawler {
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + links.size());
          System.out.println("URL counting: " + totalURLs);
-         /*
-         * 
-         * you may want to use variable 'text' to count the 500 most common words and find the longest page
-         *
-         */
          
-         //store the contents of the urls to a text file named contents.txt
+         //500 common words and largest page
+         wfc.computeWordFrequencies(text,true);
+         List<String> pageWords = Modified_Utilities.tokenizeFile(text, false);
+         int numberWords = pageWords.size();
+         
+         urlWordsCounters numberWordsInPage = new urlWordsCounters(url, numberWords);
+         urlwords.add(numberWordsInPage);// append the new page to the page list 
+         Collections.sort(urlwords,new urlWordsCountersComparator());// sort page list
+         
+         //print out the largest page
+         System.out.println("\nThe largest page(with number of words) :");
+         System.out.println(urlwords.get(0).count + " " +urlwords.get(0).url);
+                  
          try{
             FileWriter fileOfContents = new FileWriter("contents.txt",true);
-            //FileWriter indices = new FileWriter("Index.txt",true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileOfContents);
-            //BufferedWriter indexWriter = new BufferedWriter(indices);
+            FileWriter freq = new FileWriter("CommonWords.txt");
             
+            BufferedWriter bufferedWriter = new BufferedWriter(fileOfContents);
+            BufferedWriter freqWriter = new BufferedWriter(freq);          
+            
+            //store 500 common words
+            int forPrint;
+            if (wfc.getFreqList().size() > 500){
+               forPrint = 500;
+            }
+            else{
+               forPrint = wfc.getFreqList().size();
+            }
+            for(int i=0; i < forPrint;i++){
+               freqWriter.write(String.format("%-20s %d",wfc.getFreqList().get(i).getText(), wfc.getFreqList().get(i).getFrequency()));
+               freqWriter.newLine();
+            }
+            
+             //store the indices and contents to text file           
             bufferedWriter.write("INDEX " + totalURLs + " " + html.length());
-            bufferedWriter.newLine();
-            bufferedWriter.write(url);
             bufferedWriter.newLine();
             bufferedWriter.write(html);
             bufferedWriter.newLine();
             
-            //indexWriter.write(totalURLs + " " + url);
-            //indexWriter.newLine();
-            //indexWriter.close();
             bufferedWriter.close();
+            freqWriter.close();
             
          }catch(IOException e){
             e.printStackTrace();
