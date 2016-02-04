@@ -29,7 +29,7 @@ public class Controller {
 
         
         // Set the maximum number of pages to crawl, -1 means unlimited
-        config.setMaxPagesToFetch(10);
+        config.setMaxPagesToFetch(39000);
         
         // Allow the crawler to resume crawling after it has stopped
         config.setResumableCrawling(false);

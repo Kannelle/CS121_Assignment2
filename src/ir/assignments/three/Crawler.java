@@ -29,7 +29,7 @@ public class Crawler extends WebCrawler {
     }
 
     /** contains urls and number of words in that page*/
-    class urlWordsCounters
+    private static class urlWordsCounters
     {
         public String url;
         public int count;
@@ -44,7 +44,8 @@ public class Crawler extends WebCrawler {
     private static List<String> subStr = new ArrayList<String>();//list of different subdomains we found
     private static List<Frequency> lst = new ArrayList<Frequency>();//list of word frequencies
     private static Modified_WordFrequencyCounter wfc = new Modified_WordFrequencyCounter(); //use for counting frequency
-    private static List<urlWordsCounters> urlwords = new ArrayList<urlWordsCounters>(); //list of pages and number of words in them
+    private static urlWordsCounters largestPage = new urlWordsCounters("None",0);
+    //private static List<urlWordsCounters> urlwords = new ArrayList<urlWordsCounters>(); //list of pages and number of words in them
         
     // Time when the timeCalculator was last called
     public static long timeOfLastUpdate = 0;
@@ -74,15 +75,6 @@ public class Crawler extends WebCrawler {
          return a.subd.compareTo(b.subd);
       }
    }
-
-   //Implement a custom Comparator to sort the list of urlWordsCounters according to
-   //the number of words in that page, then the url
-   public static class urlWordsCountersComparator implements Comparator<urlWordsCounters> {
-      public int compare(urlWordsCounters a, urlWordsCounters b){
-        int freComparison = b.count - a.count;
-        return freComparison == 0 ? a.url.compareTo(b.url) : freComparison;      
-      }
-   }   
 
 	/**
 	* This method receives two parameters. The first parameter is the page
@@ -172,13 +164,14 @@ public class Crawler extends WebCrawler {
          List<String> pageWords = Modified_Utilities.tokenizeFile(text, false);
          int numberWords = pageWords.size();
          
-         urlWordsCounters numberWordsInPage = new urlWordsCounters(url, numberWords);
-         urlwords.add(numberWordsInPage);// append the new page to the page list 
-         Collections.sort(urlwords,new urlWordsCountersComparator());// sort page list
+         if(largestPage.count < numberWords){
+            largestPage.count = numberWords;
+            largestPage.url = url; 
+         }
          
          //print out the largest page
          System.out.println("\nThe largest page(with number of words) :");
-         System.out.println(urlwords.get(0).count + " " +urlwords.get(0).url);
+         System.out.println(largestPage.count + " " + largestPage.url);
                   
          try{
             FileWriter fileOfContents = new FileWriter("contents.txt",true);
