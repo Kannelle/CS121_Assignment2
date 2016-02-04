@@ -16,8 +16,20 @@ import java.util.regex.Pattern;
 import java.io.*;
 
 public class Crawler extends WebCrawler {
-	private static int totalURLs = 0; //total amount of URLs we found
-    private static List<String> diffSubdomains = new ArrayList<String>(); //list of different subdomains we found
+      // contains subdomain names and pages
+    class subDom
+    {
+        public String subd;
+        public int pages;
+        public subDom(String subd,int pages){
+            this.subd = subd;
+            this.pages = pages;
+        }
+    }
+    
+	 private static int totalURLs = 0;
+    private static List<subDom> diffSubdomains = new ArrayList<subDom>();//list of different subdomains and pages we found
+    private static List<String> subStr = new ArrayList<String>();//list of different subdomains we found
     
     // Time when the timeCalculator was last called
     public static long timeOfLastUpdate = 0;
@@ -41,8 +53,12 @@ public class Crawler extends WebCrawler {
 		return allURLs;
 	}
 
-   private void initialFileWriter(){
-      
+    //Implement a custom Comparator to sort the list of subDom
+   public static class subDomComparator implements Comparator<subDom> {
+      public int compare(subDom a, subDom b) 
+      {
+         return a.subd.compareTo(b.subd);
+      }
    }
 	/**
 	* This method receives two parameters. The first parameter is the page
@@ -81,15 +97,42 @@ public class Crawler extends WebCrawler {
       
       System.out.println("Subdomain: " + subDomain);
      
-      //count different subdomains
-      if(!diffSubdomains.contains(subDomain)){
-         diffSubdomains.add(subDomain);
+      //subdomains
+      if(!subStr.contains(subDomain)){
+         subStr.add(subDomain);
+         subDom sub = new subDom(subDomain,1);
+         diffSubdomains.add(sub);
+         //sort the subdomains
+         Collections.sort(subStr);
+         Collections.sort(diffSubdomains, new subDomComparator());
+      }
+      else{
+         int index = subStr.indexOf(subDomain);
+         subDom sub1 = diffSubdomains.get(index);
+         sub1.pages += 1;
+         diffSubdomains.set(index,sub1);
       }
       System.out.println("Different subdomain counting : " + diffSubdomains.size());
+      
+      try{
+         FileWriter fileOfURLs = new FileWriter("Subdomains.txt");
+         BufferedWriter bufferedWriter = new BufferedWriter(fileOfURLs);
+         
+         for(int i=0;i<diffSubdomains.size();i++) //write subdomains' URLs and pages into those subdomains to text file
+         {
+            String str = diffSubdomains.get(i).subd + ", " + diffSubdomains.get(i).pages;
+            bufferedWriter.write(str);
+            bufferedWriter.newLine();
+         }
+         bufferedWriter.close();
+         
+      }catch(IOException e){
+         e.printStackTrace();      
+	   }
 	
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-			String text = htmlParseData.getText();
+			String text = htmlParseData.getText(); 
 			String html = htmlParseData.getHtml();
 			Set<WebURL> links = htmlParseData.getOutgoingUrls();
 
@@ -98,19 +141,36 @@ public class Crawler extends WebCrawler {
 			System.out.println("Html length: " + html.length());
 			System.out.println("Number of outgoing links: " + links.size());
          System.out.println("URL counting: " + totalURLs);
+         /*
+         * 
+         * you may want to use variable 'text' to count the 500 most common words and find the longest page
+         *
+         */
          
-         timeCalculator();
-         
-         //store all URLs we found into a text called URLs
+         //store the contents of the urls to a text file named contents.txt
          try{
-            FileWriter fileOfURLs = new FileWriter("URLs.txt");//,true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileOfURLs);
+            FileWriter fileOfContents = new FileWriter("contents.txt",true);
+            //FileWriter indices = new FileWriter("Index.txt",true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileOfContents);
+            //BufferedWriter indexWriter = new BufferedWriter(indices);
+            
+            bufferedWriter.write("INDEX " + totalURLs + " " + html.length());
+            bufferedWriter.newLine();
             bufferedWriter.write(url);
             bufferedWriter.newLine();
+            bufferedWriter.write(html);
+            bufferedWriter.newLine();
+            
+            //indexWriter.write(totalURLs + " " + url);
+            //indexWriter.newLine();
+            //indexWriter.close();
             bufferedWriter.close();
+            
          }catch(IOException e){
             e.printStackTrace();
          }
+         timeCalculator();
+         
 		}
 	}
 	
