@@ -18,6 +18,10 @@ import java.io.*;
 public class Crawler extends WebCrawler {
 	private static int totalURLs = 0; //total amount of URLs we found
     private static List<String> diffSubdomains = new ArrayList<String>(); //list of different subdomains we found
+    
+    // Time when the timeCalculator was last called
+    public static long timeOfLastUpdate = 0;
+    
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp3|zip|gz))$");
     
@@ -95,6 +99,8 @@ public class Crawler extends WebCrawler {
 			System.out.println("Number of outgoing links: " + links.size());
          System.out.println("URL counting: " + totalURLs);
          
+         timeCalculator();
+         
          //store all URLs we found into a text called URLs
          try{
             FileWriter fileOfURLs = new FileWriter("URLs.txt");//,true);
@@ -106,6 +112,51 @@ public class Crawler extends WebCrawler {
             e.printStackTrace();
          }
 		}
+	}
+	
+	// Method to calculate the time spent crawling with stopping and resuming accounted for
+	public static void timeCalculator() {
+		long timeElapsed = 0;
+		
+		File file = new File("timeFile.txt");
+		
+		if (file.exists()) {
+			try {
+				// Check if timeFile already has a startTime
+				Scanner sc = new Scanner(file);
+				if (sc.hasNextInt()) {
+					timeElapsed= sc.nextInt();			
+				}
+				sc.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}		
+
+
+			
+		}
+		
+		// Get the current time
+		long currentTime = System.currentTimeMillis( );
+		
+		// Find the time since this method was last called
+		long timeSinceLastUpdate = currentTime - timeOfLastUpdate;
+		
+		// Add the timeSinceLastUpdate to timeElapsed to get the total time
+		timeElapsed += timeSinceLastUpdate;
+		
+		// Create or overwrite a file and write the timeElapsed to it
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter("timeFile.txt");
+			writer.println(timeElapsed);
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}		
+		
+		// Update the timeOfLastUpdate variable
+		timeOfLastUpdate = currentTime;
 	}
 	
 	// Print the count of the unique pages 

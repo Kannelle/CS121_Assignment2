@@ -2,6 +2,10 @@
 
 package ir.assignments.three;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -28,7 +32,7 @@ public class Controller {
         config.setMaxPagesToFetch(10);
         
         // Allow the crawler to resume crawling after it has stopped
-        config.setResumableCrawling(true);
+        config.setResumableCrawling(false);
         
         /*
          * Instantiate the controller for this crawl.
@@ -46,7 +50,8 @@ public class Controller {
         controller.addSeed("http://www.ics.uci.edu/");
 
         // Start the timer for crawlTime 
-        long start = System.currentTimeMillis( );
+        Crawler.timeOfLastUpdate = System.currentTimeMillis( );
+        
         /*
          * Start the crawl. This is a blocking operation, meaning that your code
          * will reach the line after this only when crawling is finished.
@@ -58,19 +63,31 @@ public class Controller {
         System.out.println(Crawler.crawl("http://www.ics.uci.edu/"));
         
         // Find out how much time it took to crawl the entire domain
-        crawlTime(start);
+        crawlTime();
         
         // Find out how many unique pages were found
         Crawler.findUnique();
     }
 	
 	// Method to find out how much time it took to crawl the entire domain and print it
-	public static void crawlTime (long startTime) {
-		long endTime = System.currentTimeMillis( );
-		long elapsedTime = endTime - startTime;
-		System.out.println("Time elapsed: "+elapsedTime+" ms");
+	public static void crawlTime() {
+		long timeElapsed = 0;
+		try {
+			Scanner sc = new Scanner(new File("timeFile.txt"));
+			if (sc.hasNextInt()) {
+				timeElapsed= sc.nextInt();
+			}
+			sc.close();
+		}
+		catch (FileNotFoundException e) {
+		e.printStackTrace();
+		}		
+
+
+		System.out.println("Time elapsed: "+timeElapsed+" ms");
 	}
 	
+
 
 	
 	// Method to find the number of subdomains found.
