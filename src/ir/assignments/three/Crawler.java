@@ -91,7 +91,7 @@ public class Crawler extends WebCrawler {
 		String href = url.getURL().toLowerCase();
 
 		// Check if URL is a sub-domain of ics.uci.edu and if it is a trap
-		// If it is, do not visit the page
+		// If it is a trap, do not visit the page
 		return !FILTERS.matcher(href).matches()
 		&& href.contains(".ics.uci.edu")
 		&& !findTrap(href);
@@ -169,7 +169,7 @@ public class Crawler extends WebCrawler {
             largestPage.url = url; 
          }
          
-         //print out the largest page
+         //print out the page with the largest number of words
          System.out.println("\nThe largest page(with number of words) :");
          System.out.println(largestPage.count + " " + largestPage.url);
                   
@@ -205,17 +205,17 @@ public class Crawler extends WebCrawler {
          }catch(IOException e){
             e.printStackTrace();
          }
-         timeCalculator();
+         timeCalculator(url);
          
 		}
 	}
 	
 	// Method to calculate the time spent crawling with stopping and resuming accounted for
-	public static void timeCalculator() {
+	public static void timeCalculator(String url) {
 		long timeElapsed = 0;
 		
 		File file = new File("timeFile.txt");
-		
+
 		if (file.exists()) {
 			try {
 				// Check if timeFile already has a startTime
@@ -226,10 +226,7 @@ public class Crawler extends WebCrawler {
 				sc.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-			}		
-
-
-			
+			}			
 		}
 		
 		// Get the current time
@@ -238,8 +235,11 @@ public class Crawler extends WebCrawler {
 		// Find the time since this method was last called
 		long timeSinceLastUpdate = currentTime - timeOfLastUpdate;
 		
-		// Add the timeSinceLastUpdate to timeElapsed to get the total time
-		timeElapsed += timeSinceLastUpdate;
+		if (!url.matches("http://www.ics.uci.edu/")) {
+			// Add the timeSinceLastUpdate to timeElapsed to get the total time
+			timeElapsed += timeSinceLastUpdate;
+		}
+
 		
 		// Create or overwrite a file and write the timeElapsed to it
 		PrintWriter writer;
