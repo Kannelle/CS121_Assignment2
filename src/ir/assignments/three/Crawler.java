@@ -174,11 +174,13 @@ public class Crawler extends WebCrawler {
          System.out.println(largestPage.count + " " + largestPage.url);
                   
          try{
-            FileWriter fileOfContents = new FileWriter("contents.txt",true);
+            FileWriter fileOfContents = new FileWriter("contents/" + totalURLs + ".txt");
+            FileWriter indices = new FileWriter("indices.txt",true);
             FileWriter freq = new FileWriter("CommonWords.txt");
             
             BufferedWriter bufferedWriter = new BufferedWriter(fileOfContents);
-            BufferedWriter freqWriter = new BufferedWriter(freq);          
+            BufferedWriter freqWriter = new BufferedWriter(freq);
+            BufferedWriter indicesWriter = new BufferedWriter(indices);      
             
             //store 500 common words
             int forPrint;
@@ -193,14 +195,20 @@ public class Crawler extends WebCrawler {
                freqWriter.newLine();
             }
             
-             //store the indices and contents to text file           
-            bufferedWriter.write("INDEX " + totalURLs + " " + html.length());
+            //create atext file for the indices of contents
+            indicesWriter.write("INDEX " + totalURLs + " " + url);
+            indicesWriter.newLine();
+            
+            
+            //store the indices and contents to text file           
+            bufferedWriter.write("INDEX " + totalURLs + " " + text.length());
             bufferedWriter.newLine();
-            bufferedWriter.write(html);
+            bufferedWriter.write(text);
             bufferedWriter.newLine();
             
             bufferedWriter.close();
             freqWriter.close();
+            indicesWriter.close();
             
          }catch(IOException e){
             e.printStackTrace();
