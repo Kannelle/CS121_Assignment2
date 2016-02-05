@@ -51,7 +51,7 @@ public class Crawler extends WebCrawler {
     public static long timeOfLastUpdate = 0;
     
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
-            + "|png|mp3|mp3|zip|gz))$");
+            + "|png|mp3|mp3|zip|gz|xls|xlsx|ppt|pptx|ps|bigwig|bw))$");
 
     // Create a collection of all URLs
     private static Collection<String> allURLs = new LinkedHashSet<String>();
@@ -273,7 +273,8 @@ public class Crawler extends WebCrawler {
 	public static boolean findTrap(String url){ 
 	 		return url.contains("calendar.ics.uci.edu")
 	 				|| url.contains("duttgroup.ics.uci.edu")
-	 				|| url.contains("ics.uci.edu/prospective");  
+	 				|| url.contains("ics.uci.edu/prospective")
+	 				|| url.contains("wics.ics.uci.edu");  
  	} 
 
 
