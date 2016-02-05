@@ -272,7 +272,8 @@ public class Crawler extends WebCrawler {
 	// Return true if a URL is a crawler trap  
 	public static boolean findTrap(String url){ 
 	 		return url.contains("calendar.ics.uci.edu")
-	 				|| url.contains("duttgroup.ics.uci.edu");  
+	 				|| url.contains("duttgroup.ics.uci.edu")
+	 				|| url.contains("ics.uci.edu/prospective");  
  	} 
 
 
