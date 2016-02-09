@@ -1,3 +1,10 @@
+/*
+Kristina Wong, 76513468
+Haoming Li, 20426226
+Shengjie Xu, 10616769
+Yirui Jiang, 64137163
+*/
+
 package ir.assignments.three;
 
 import ir.assignments.three.Frequency;
@@ -15,7 +22,7 @@ import java.lang.ArrayIndexOutOfBoundsException;
  * Counts the total number of words and their frequencies in a text file.
  */
 public final class Modified_WordFrequencyCounter {
-   private static List<Frequency> lst = new ArrayList<Frequency>();
+   private static List<Frequency> lst = new ArrayList<Frequency>(); 
 
 	public Modified_WordFrequencyCounter(){
    }

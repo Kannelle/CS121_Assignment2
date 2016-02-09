@@ -1,4 +1,10 @@
 // crawler4j
+/*
+Kristina Wong, 76513468
+Haoming Li, 20426226
+Shengjie Xu, 10616769
+Yirui Jiang, 64137163
+*/
 
 package ir.assignments.three;
 
@@ -17,7 +23,7 @@ import java.util.regex.Pattern;
 import java.io.*;
 
 public class Crawler extends WebCrawler {
-      // contains subdomain names and pages
+      /** contains subdomain names and pages*/
     class subDom
     {
         public String subd;
@@ -28,7 +34,7 @@ public class Crawler extends WebCrawler {
         }
     }
 
-    /** contains urls and number of words in that page*/
+    /** contains urls and the number of words in that page*/
     private static class urlWordsCounters
     {
         public String url;
@@ -43,15 +49,16 @@ public class Crawler extends WebCrawler {
     private static List<subDom> diffSubdomains = new ArrayList<subDom>();//list of different subdomains and pages we found
     private static List<String> subStr = new ArrayList<String>();//list of different subdomains we found
     private static List<Frequency> lst = new ArrayList<Frequency>();//list of word frequencies
-    private static Modified_WordFrequencyCounter wfc = new Modified_WordFrequencyCounter(); //use for counting frequency
-    private static urlWordsCounters largestPage = new urlWordsCounters("None",0);
-    //private static List<urlWordsCounters> urlwords = new ArrayList<urlWordsCounters>(); //list of pages and number of words in them
+    private static Modified_WordFrequencyCounter wfc = new Modified_WordFrequencyCounter(); //use for counting frequencies
+    private static urlWordsCounters largestPage = new urlWordsCounters("None",0); // the largest page and the number of words in the page
         
     // Time when the timeCalculator was last called
     public static long timeOfLastUpdate = 0;
     
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
-            + "|png|mp3|mp3|zip|gz|xls|xlsx|ppt|pptx|ps|bigwig|bw))$");
+                +   "|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso|epub|dll|cnf|tgz|sha1" 
+	            +   "|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf" + "|thmx|mso|arff|rtf|jar|csv"
+            + "|png|mp3|mp3|zip|gz|xls|xlsx|ppt|pptx|ps|bigwig|bw|mp4))$");
 
     // Create a collection of all URLs
     private static Collection<String> allURLs = new LinkedHashSet<String>();
@@ -106,9 +113,6 @@ public class Crawler extends WebCrawler {
 		String url = page.getWebURL().getURL();
       String subDomain = page.getWebURL().getSubDomain();
 		
-		// append URL to the URL collection
-		//allURLs.add(url);
-		
 		System.out.println("URL: " + url);
       System.out.println("Subdomain: " + subDomain);
      
@@ -132,7 +136,7 @@ public class Crawler extends WebCrawler {
       try{
          FileWriter fileOfURLs = new FileWriter("Subdomains.txt");
          BufferedWriter bufferedWriter = new BufferedWriter(fileOfURLs);
-         //write subdomains' URLs and pages into those subdomains to text file
+         //write subdomains' URLs and pages into Subdomains.txt
          for(int i=0;i<diffSubdomains.size();i++) 
          {
             String str = diffSubdomains.get(i).subd + ", " + diffSubdomains.get(i).pages;
@@ -159,8 +163,10 @@ public class Crawler extends WebCrawler {
 			System.out.println("Number of outgoing links: " + links.size());
          System.out.println("URL counting: " + totalURLs);
          
-         //500 common words and largest page
+         //counting 500 common words
          wfc.computeWordFrequencies(text,true);
+         
+         //looking for the largest page
          List<String> pageWords = Modified_Utilities.tokenizeFile(text, false);
          int numberWords = pageWords.size();
          
@@ -174,6 +180,13 @@ public class Crawler extends WebCrawler {
          System.out.println(largestPage.count + " " + largestPage.url);
                   
          try{
+            // create directory contents to store the contents of every pages
+            File file = new File("contents");
+            if (!file.exists()) {
+		         if (file.mkdir()) {
+			         System.out.println("Directory 'contents' is created!");
+		         }
+	         }
             FileWriter fileOfContents = new FileWriter("contents/" + totalURLs + ".txt");
             FileWriter indices = new FileWriter("indices.txt",true);
             FileWriter freq = new FileWriter("CommonWords.txt");
@@ -195,7 +208,7 @@ public class Crawler extends WebCrawler {
                freqWriter.newLine();
             }
             
-            //create atext file for the indices of contents
+            //create a text file for the indices of contents
             indicesWriter.write("INDEX " + totalURLs + " " + url);
             indicesWriter.newLine();
             

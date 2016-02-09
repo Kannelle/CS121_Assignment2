@@ -1,3 +1,10 @@
+/*
+Kristina Wong, 76513468
+Haoming Li, 20426226
+Shengjie Xu, 10616769
+Yirui Jiang, 64137163
+*/
+
 package ir.assignments.three;
 
 import java.io.File;
@@ -15,7 +22,8 @@ public class Modified_Utilities {
    private static List<String> stopWords = new ArrayList<String>();
    
    private static void createStopWordsList(){
-      String delimiter = new String("[^a-zA-Z']+");
+      String delimiter = new String("[^a-zA-Z\']+");
+      //get stop words from file stopWords
       File stopW = new File("stopWords.txt");
       try(Scanner scan = new Scanner(stopW);){ // scan the input file
          while(scan.hasNextLine()){
@@ -52,10 +60,10 @@ public class Modified_Utilities {
 	public static ArrayList<String> tokenizeFile(String text, boolean useStopWords) {
       createStopWordsList();
       ArrayList<String> words = new ArrayList<String>();// create an arraylist for seperated word
-      String delimiter = new String("[^a-zA-Z']+"); // create a delimiter, including all non-alphabet characters
+      String delimiter = new String("[^a-zA-Z']+"); // create a delimiter
       String[] parts = text.split(delimiter);// split lines according to the delimiter
       for(String part: parts){
-         if(!part.equals("")){
+         if(!part.equals("") && part.length()>1){
             if(useStopWords && !stopWords.contains(part.toLowerCase())){//check if to use stop words
                words.add(part.toLowerCase());} // put the splited words into an arraylist(words),
                                                  // delete all the empty strings,

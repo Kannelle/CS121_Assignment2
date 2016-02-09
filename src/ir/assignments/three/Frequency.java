@@ -1,3 +1,10 @@
+/*
+Kristina Wong, 76513468
+Haoming Li, 20426226
+Shengjie Xu, 10616769
+Yirui Jiang, 64137163
+*/
+
 package ir.assignments.three;
 
 /**

@@ -1,4 +1,10 @@
 // crawler4j
+/*
+Kristina Wong, 76513468
+Haoming Li, 20426226
+Shengjie Xu, 10616769
+Yirui Jiang, 64137163
+*/
 
 package ir.assignments.three;
 
@@ -20,10 +26,10 @@ public class Controller {
 
         CrawlConfig config = new CrawlConfig();
         config.setUserAgentString("UCI Inf141-CS121 crawler 76513468 10616769 20426226 64137163");
+        boolean success = true;
         config.setCrawlStorageFolder(crawlStorageFolder);
-        
         // Add a politeness delay of 1200 ms 
-        config.setPolitenessDelay(1200);
+        config.setPolitenessDelay(1300);
 
         config.setMaxDepthOfCrawling(-1);
 
